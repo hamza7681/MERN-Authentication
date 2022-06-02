@@ -96,7 +96,7 @@ const userCtrl = {
         path: "/user/refresh_token",
         maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
       });
-      res.json({ msg: "Login Successfully!" });
+      res.json({ msg: "Login Successfully!", refresh_token: refresh_token });
     } catch (e) {
       return res.status(500).json({ msg: e.message });
     }
@@ -108,7 +108,10 @@ const userCtrl = {
         return res.status(400).json({ msg: "Please login now!" });
       }
       jwt.verify(rf_token, REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.status(400).json({ msg: "Please Login now!" });
+        if (err)
+          return res
+            .status(400)
+            .json({ msg: "Please Login now for accessing token !" });
         const access_token = createAccessToken({ id: user.id });
         res.json({ access_token });
       });
@@ -123,7 +126,7 @@ const userCtrl = {
       if (!user) {
         return res.status(400).json({ msg: "This email does not exist" });
       }
-      const accessToken = createAccessToken({ id: user.id });
+      const accessToken = createRefreshToken({ id: user.id });
       const url = `${CLIENT_URL}/user/reset/${accessToken}`;
       sgEmail.setApiKey(SENGRID_API);
       const message = {
@@ -157,7 +160,7 @@ const userCtrl = {
   getUserInfo: async (req, res) => {
     try {
       const user = await User.findById(req.user.id).select("-password");
-      res.json({ user });
+      res.json(user);
     } catch (e) {
       return res.status(500).json({ msg: e.message });
     }

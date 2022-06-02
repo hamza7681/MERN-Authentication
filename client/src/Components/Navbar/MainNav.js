@@ -5,22 +5,23 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Avatar } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { dispatchGetUser, fetchUser } from "../../Redux/Actions/AuthActions";
+
 
 const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
+  const { token } = useSelector((state) => state.TokenReducer);
+  const { user } = useSelector((state) => state.AuthReducer);
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -28,40 +29,85 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const routes = [
-    {
-      path: "/",
-      name: "Home",
-    },
-    {
-      path: "/login",
-      name: "Login",
-    },
-    {
-      path: "/signup",
-      name: "SignUp",
-    },
-  ];
+
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    if (token) {
+      const getUser = async () => {
+        return await fetchUser(token).then((res) => {
+          dispatch(dispatchGetUser(res));
+        });
+      };
+      getUser();
+    }
+  }, [token, dispatch]);
 
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
-        {routes.map((val, index) => {
-          return (
+        <ListItem onClick={handleDrawerToggle}>
+          <SideList>
+            <Link to="/" className="link">
+              Home
+            </Link>
+          </SideList>
+        </ListItem>
+        <Divider />
+
+        {token ? (
+          <>
+            <ListItem onClick={handleDrawerToggle}>
+              <SideList>
+                <Link to="/profile" className="link">
+                  Profile
+                </Link>
+              </SideList>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <SideList>
+                <span
+                  className="link"
+                  onClick={() => {
+                    dispatch({ type: "REMOVE_TOKEN" });
+                    localStorage.clear();
+                  }}
+                >
+                  Logout
+                </span>
+              </SideList>
+            </ListItem>
+          </>
+        ) : (
+          ""
+        )}
+
+        {!token ? (
+          <>
             <>
-              <ListItem key={index} onClick={handleDrawerToggle}>
+              <ListItem onClick={handleDrawerToggle}>
                 <SideList>
-                  <Link to={val.path} className="link">
-                    {val.name}
+                  <Link to="/login" className="link">
+                    Login
                   </Link>
                 </SideList>
               </ListItem>
-              <Divider/>
+              <Divider />
+              <ListItem onClick={handleDrawerToggle}>
+                <SideList>
+                  <Link to="/signup" className="link">
+                    SignUp
+                  </Link>
+                </SideList>
+              </ListItem>
+              <Divider />
             </>
-          );
-        })}
+          </>
+        ) : (
+          ""
+        )}
       </List>
     </div>
   );
@@ -98,29 +144,49 @@ function ResponsiveDrawer(props) {
             </Left>
             <Right>
               <ul>
-                <li>
-                  <Link to="/login" className="link">
-                    Login
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/signup" className="link">
-                    SignUp
-                  </Link>
-                </li>
-                <li>
-                  <AvatarDiv>
-                    <Avatar
-                      alt="Hamza"
-                      sx={{ bgcolor: "orange" }}
-                      src="/static/images/avatar/1.jpg"
-                    />
-                    <h4>Hamza Siddique</h4>
-                  </AvatarDiv>
-                </li>
-                <li>
-                  <span className="link">Logout</span>
-                </li>
+                {token ? (
+                  <>
+                    <li>
+                      <AvatarDiv>
+                        <Avatar
+                          alt={user.name}
+                          sx={{ bgcolor: "orange" }}
+                          src="/static/images/avatar/1.jpg"
+                        />
+                        <h4>{user.name}</h4>
+                      </AvatarDiv>
+                    </li>
+                    <li>
+                      <Link to="/profile" className="link">
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <span
+                        className="link"
+                        onClick={() => {
+                          dispatch({ type: "REMOVE_TOKEN" });
+                          localStorage.clear();
+                        }}
+                      >
+                        Logout
+                      </span>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link to="/login" className="link">
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/signup" className="link">
+                        SignUp
+                      </Link>
+                    </li>
+                  </>
+                )}
               </ul>
             </Right>
           </MainHeader>
@@ -209,6 +275,7 @@ const Right = styled.div`
       .link {
         color: white;
         text-decoration: none;
+        cursor: pointer;
       }
     }
   }

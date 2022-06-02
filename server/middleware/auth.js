@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 const auth = (req, res, next) => {
   try {
@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
     if (!token) {
       return res.status(400).json({ msg: "Invalid Authentication" });
     }
-    jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) {
         return res.status(400).json({ msg: "Invalid Authentication" });
       }
