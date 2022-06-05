@@ -12,6 +12,7 @@ import EmailActivationPage from "./Pages/EmailActivationPage";
 import ProtectedRoutes from "./Routes/ProtectedRoutes";
 import PrivateRoutes from "./Routes/PrivateRoutes";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
+import EditUserPage from "./Pages/EditUserPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/edit-user/:id" element={<EditUserPage />} />
         </Route>
         <Route element={<PrivateRoutes />}>
           <Route path="/login" element={<LoginPage />} />

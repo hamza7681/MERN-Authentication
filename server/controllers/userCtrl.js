@@ -7,6 +7,7 @@ const ACTIVATION_TOKEN_SECRET = process.env.ACTIVATION_TOKEN_SECRET;
 const SENGRID_API = process.env.SENDGRID_API_KEY;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const nodemailer = require("nodemailer");
 
 const userCtrl = {
   register: async (req, res) => {
@@ -52,6 +53,8 @@ const userCtrl = {
       };
 
       sgEmail.send(message);
+
+    
       res.json({
         msg: "Register Success! Please activate your email to start.",
       });

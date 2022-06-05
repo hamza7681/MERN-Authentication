@@ -1,7 +1,15 @@
 import { TextField } from "@mui/material";
 import React from "react";
 
-const Input = ({ label, type, value, name, handleChangeInput }) => {
+const Input = ({
+  label,
+  type,
+  value,
+  name,
+  handleChangeInput,
+  disabled,
+  defaultValue,
+}) => {
   return (
     <>
       <TextField
@@ -13,6 +21,8 @@ const Input = ({ label, type, value, name, handleChangeInput }) => {
         value={value}
         name={name}
         onChange={handleChangeInput}
+        disabled={disabled}
+        defaultValue={defaultValue}
       />
     </>
   );

@@ -95,9 +95,7 @@ const SignupComp = () => {
                 value={cf_password}
               />
             </div>
-            <div>
-              <Input label="Password" type="file" />
-            </div>
+           
             <div>
               <Button name="Signup" type="submit" />
             </div>

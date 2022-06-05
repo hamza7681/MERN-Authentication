@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const Button = ({ name, type }) => {
+const Button = ({ name, type, onClick }) => {
   return (
     <>
-      <Btn type={type}>{name}</Btn>
+      <Btn onClick={onClick} type={type}>
+        {name}
+      </Btn>
     </>
   );
 };
