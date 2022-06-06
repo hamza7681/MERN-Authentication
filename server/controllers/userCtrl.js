@@ -7,7 +7,6 @@ const ACTIVATION_TOKEN_SECRET = process.env.ACTIVATION_TOKEN_SECRET;
 const SENGRID_API = process.env.SENDGRID_API_KEY;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
-const nodemailer = require("nodemailer");
 
 const userCtrl = {
   register: async (req, res) => {
@@ -54,7 +53,6 @@ const userCtrl = {
 
       sgEmail.send(message);
 
-    
       res.json({
         msg: "Register Success! Please activate your email to start.",
       });
@@ -104,24 +102,14 @@ const userCtrl = {
       return res.status(500).json({ msg: e.message });
     }
   },
-  getAccessToken: async (req, res) => {
-    try {
-      const rf_token = req.cookies.refreshtoken;
-      if (!rf_token) {
-        return res.status(400).json({ msg: "Please login now!" });
-      }
-      jwt.verify(rf_token, REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err)
-          return res
-            .status(400)
-            .json({ msg: "Please Login now for accessing token !" });
-        const access_token = createAccessToken({ id: user.id });
-        res.json({ access_token });
-      });
-    } catch (e) {
-      return res.status(500).json({ msg: e.message });
-    }
-  },
+  // getAccessToken: async (req, res) => {
+  //   try {
+  //     const access_token = createRefreshToken({ id: req.user.id });
+  //     res.json({ access_token });
+  //   } catch (e) {
+  //     return res.status(500).json({ msg: e.message });
+  //   }
+  // },
   forgotPassword: async (req, res) => {
     try {
       const { email } = req.body;
@@ -229,7 +217,7 @@ const createRefreshToken = (payload) => {
 };
 
 const createAccessToken = (payload) => {
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "15s" });
 };
 
 module.exports = userCtrl;

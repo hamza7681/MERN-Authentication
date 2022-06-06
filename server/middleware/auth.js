@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
+
 const auth = (req, res, next) => {
   try {
     const token = req.header("Authorization");
@@ -13,7 +14,7 @@ const auth = (req, res, next) => {
       }
       req.user = user;
       next();
-    });
+    }) 
   } catch (e) {
     return res.status(500).json({ msg: e.message });
   }

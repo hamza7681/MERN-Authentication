@@ -7,7 +7,7 @@ const router = require("express").Router();
 router.post("/register", userCtrl.register);
 router.post("/verify-email", userCtrl.activateEmail);
 router.post("/login", userCtrl.login);
-router.post("/refresh_token", userCtrl.getAccessToken);
+// router.post("/refresh_token", auth, userCtrl.getAccessToken);
 router.post("/forgot-password", userCtrl.forgotPassword);
 router.post("/reset-password", auth, userCtrl.resetPassword);
 router.get("/profile", auth, userCtrl.getUserInfo);

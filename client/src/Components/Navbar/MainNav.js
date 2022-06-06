@@ -58,6 +58,14 @@ function ResponsiveDrawer(props) {
 
         {token ? (
           <>
+          <ListItem onClick={handleDrawerToggle}>
+              <SideList>
+                <Link to="/admin" className="link">
+                  Admin Page
+                </Link>
+              </SideList>
+            </ListItem>
+            <Divider />
             <ListItem onClick={handleDrawerToggle}>
               <SideList>
                 <Link to="/profile" className="link">
@@ -155,6 +163,11 @@ function ResponsiveDrawer(props) {
                         />
                         <h4>{user.name}</h4>
                       </AvatarDiv>
+                    </li>
+                    <li>
+                      <Link to="/admin" className="link">
+                        Admin Page
+                      </Link>
                     </li>
                     <li>
                       <Link to="/profile" className="link">

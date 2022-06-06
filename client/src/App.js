@@ -13,14 +13,22 @@ import ProtectedRoutes from "./Routes/ProtectedRoutes";
 import PrivateRoutes from "./Routes/PrivateRoutes";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import EditUserPage from "./Pages/EditUserPage";
+import AdminRoutePage from "./Pages/AdminRoutePage";
+import UnAuthorizedPage from "./Pages/UnAuthorizedPage";
+import useAdmin from "./CustomHooks/useAdmin";
 
 function App() {
+  const isAdmin = useAdmin();
   return (
     <div className="App">
       <ToastContainer />
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route
+          path="/admin"
+          element={isAdmin ? <AdminRoutePage /> : <UnAuthorizedPage />}
+        />
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/edit-user/:id" element={<EditUserPage />} />

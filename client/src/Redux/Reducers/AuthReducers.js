@@ -1,8 +1,7 @@
 import ACTIONS from "../Actions";
 
 const initialState = {
-  users: [],
-  user:{},
+  user: {},
   isLogged: false,
   isAdmin: false,
 };
