@@ -20,9 +20,11 @@ import { FaSearch } from "react-icons/fa";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector } from "react-redux";
 
+
 export default function CollapsibleTable() {
-  const { users } = useSelector((state) => state.UsersReducer);
-  const [rows, setRows] = React.useState(users);
+  const { roles } = useSelector((state) => state.RoleReducer);
+  const [rows, setRows] = React.useState(roles);
+
   const [search, setSearch] = React.useState("");
   const [emailErr, setEmailErr] = React.useState({});
   const [open, setOpen] = React.useState(false);
@@ -41,11 +43,8 @@ export default function CollapsibleTable() {
     let valid = searchValidate();
     if (valid) {
       if (e.key == "Enter") {
-        const filterRows = users.filter((row) => {
-          return (
-            row.email.toLowerCase().includes(search.toLowerCase()) ||
-            row.name.toLowerCase().includes(search.toLowerCase())
-          );
+        const filterRows = roles.filter((row) => {
+          return row.title.toLowerCase().includes(search.toLowerCase());
         });
         setRows(filterRows);
       }
@@ -71,7 +70,7 @@ export default function CollapsibleTable() {
   // reset hadler
   const resetDataHandler = (e) => {
     if (e.target.value === "") {
-      setRows(users);
+      setRows(roles);
     }
   };
 
@@ -178,17 +177,12 @@ export default function CollapsibleTable() {
               <TableCell>
                 <Heading>ID</Heading>
               </TableCell>
-              <TableCell align="left">
-                <Heading>Name</Heading>
-              </TableCell>
-              <TableCell align="left">
-                <Heading>Email</Heading>
-              </TableCell>
+
               <TableCell align="left">
                 <Heading>Role</Heading>
               </TableCell>
               <TableCell align="left">
-                <Heading>Action</Heading>
+                <Heading>Actions</Heading>
               </TableCell>
             </TableRow>
           </TableHead>

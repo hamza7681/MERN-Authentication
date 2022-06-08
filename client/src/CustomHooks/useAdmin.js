@@ -4,7 +4,7 @@ import { fetchUser, dispatchGetUser } from "../Redux/Actions/AuthActions";
 
 const useAdmin = () => {
   const { token } = useSelector((state) => state.TokenReducer);
-  const { isAdmin } = useSelector((state) => state.AuthReducer);
+  const { isSuperAdmin, isAdmin } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
   useEffect(() => {
     if (token) {
@@ -17,7 +17,7 @@ const useAdmin = () => {
     }
   }, [token, dispatch]);
 
-  return isAdmin;
+  return { isSuperAdmin, isAdmin };
 };
 
 export default useAdmin;

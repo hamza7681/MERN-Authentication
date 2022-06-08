@@ -1,17 +1,17 @@
 import ACTIONS from "./index";
 import auth from "../../axios/axiosInstance";
 
-export const fetchAllUsers = async (token) => {
-  const res = await auth.get("/user/all-profiles", {
+export const fetchAllRoles = async (token) => {
+  const res = await auth.get("/user/get-roles", {
     headers: { Authorization: token },
   });
   return res;
   
 };
 
-export const dispatchAllUsers = (res) => {
+export const dispatchAllRoles = (res) => {
   return {
-    type: ACTIONS.GET_ALL_USERS,
+    type: ACTIONS.GET_ROLES,
     payload: res.data,
   };
 };

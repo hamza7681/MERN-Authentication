@@ -16,9 +16,10 @@ import EditUserPage from "./Pages/EditUserPage";
 import AdminRoutePage from "./Pages/AdminRoutePage";
 import UnAuthorizedPage from "./Pages/UnAuthorizedPage";
 import useAdmin from "./CustomHooks/useAdmin";
+import CreateRolePage from "./Pages/CreateRolePage";
 
 function App() {
-  const isAdmin = useAdmin();
+  const { isSuperAdmin, isAdmin } = useAdmin();
   return (
     <div className="App">
       <ToastContainer />
@@ -27,11 +28,18 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route
           path="/admin"
-          element={isAdmin ? <AdminRoutePage /> : <UnAuthorizedPage />}
+          element={isSuperAdmin ? <AdminRoutePage /> : <UnAuthorizedPage />}
+        />
+        <Route
+          path="/create-role"
+          element={isSuperAdmin ? <CreateRolePage /> : <UnAuthorizedPage />}
         />
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/edit-user/:id" element={<EditUserPage />} />
+          <Route
+            path="/edit-user/:id"
+            element={isSuperAdmin ? <EditUserPage /> : <UnAuthorizedPage />}
+          />
         </Route>
         <Route element={<PrivateRoutes />}>
           <Route path="/login" element={<LoginPage />} />

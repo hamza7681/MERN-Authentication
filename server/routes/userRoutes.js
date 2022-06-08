@@ -14,7 +14,11 @@ router.get("/profile", auth, userCtrl.getUserInfo);
 router.get("/all-profiles", auth, authAdmin, userCtrl.getUsersAllInfo);
 router.get("/logout", userCtrl.logout);
 router.patch("/update-profile", auth, userCtrl.updateUser);
-router.patch("/update_all/:id", auth, authAdmin, userCtrl.updateUserRole);
+router.patch("/update-user-role/:id", auth, authAdmin, userCtrl.updateUserRole);
 router.delete("/delete-profile/:id", auth, authAdmin, userCtrl.deleteUser);
+router.post("/create-role", auth, authAdmin, userCtrl.createRole);
+router.get("/get-roles", auth, authAdmin, userCtrl.getAllRoles);
+router.delete("/delete-role/:id", auth, authAdmin, userCtrl.deleteRole);
+
 
 module.exports = router;

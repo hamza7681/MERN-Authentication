@@ -15,8 +15,8 @@ import {
 
 const ProfileComp = () => {
   const { token } = useSelector((state) => state.TokenReducer);
-  const { user, isAdmin } = useSelector((state) => state.AuthReducer);
- 
+  const { user, isSuperAdmin } = useSelector((state) => state.AuthReducer);
+
   const initialState = { name: "", password: "", cf_password: "" };
   const [data, setData] = useState(initialState);
   const [avatar, setAvatar] = useState(false);
@@ -29,17 +29,6 @@ const ProfileComp = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isAdmin) {
-      const getAllUsers = async () => {
-        return await fetchAllUsers(token).then((res) => {
-          dispatch(dispatchAllUsers(res));
-        });
-      };
-      getAllUsers();
-    }
-  }, [token, isAdmin, dispatch]);
-
-  useEffect(() => {
     if (token) {
       const getUser = async () => {
         return await fetchUser(token).then((res) => {
@@ -49,6 +38,17 @@ const ProfileComp = () => {
       getUser();
     }
   }, [token, dispatch]);
+
+  useEffect(() => {
+    if (isSuperAdmin) {
+      const getAllUsers = async () => {
+        return await fetchAllUsers(token).then((res) => {
+          dispatch(dispatchAllUsers(res));
+        });
+      };
+      getAllUsers();
+    }
+  }, [token, isSuperAdmin, dispatch]);
 
   const changeAvatar = async (e) => {
     // e.preventDefault();
@@ -91,8 +91,8 @@ const ProfileComp = () => {
       auth.patch(
         "/user/update-profile",
         {
-          name: name ? name : user.name,
-          avatar: avatar ? avatar : user.avatar,
+          name: name ? name : user.user.name,
+          avatar: avatar ? avatar : user.user.avatar,
         },
         {
           headers: {
@@ -200,7 +200,7 @@ const ProfileComp = () => {
           </div>
         </Left>
         <Right>
-          <Table />
+          {isSuperAdmin ? <Table /> : "**Only admin can see users detail**"}
         </Right>
       </Container>
     </>

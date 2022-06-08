@@ -1,60 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Button from "../../Reuseables/Button";
 import Input from "../../Reuseables/Input";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, InputLabel, MenuItem, Select } from "@mui/material";
 import { toast } from "react-toastify";
 import auth from "../../axios/axiosInstance";
 
 const EditComp = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { token } = useSelector((state) => state.TokenReducer);
-  const { users } = useSelector((state) => state.UsersReducer);
-  const [checkAdmin, setCheckAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [num, setNum] = useState(0);
-  const [editUser, setEditUser] = useState([]);
+  const { state } = useLocation();
+  const { roles } = useSelector((state) => state.RoleReducer);
 
-  useEffect(() => {
-    if (users.length !== 0) {
-      users.forEach((user) => {
-        if (user._id === id) {
-          setEditUser(user);
-          setCheckAdmin(user.role === 1 ? true : false);
-        } else {
-          navigate("/profile");
-        }
-      });
-    }
-  }, [users, id, navigate]);
-
-  const handleCheck = () => {
-    setCheckAdmin(!checkAdmin);
-    setNum(num + 1);
+  const [value, setValue] = useState();
+  const handleChange = (e) => {
+    let value = e.target.value;
+    setValue(value);
   };
 
-  const handleUpdate = async () => {
-    try {
-      if (num % 2 !== 0) {
-        const res = await auth.patch(
-          `/user/update_all/${editUser._id}`,
-          {
-            role: checkAdmin ? 1 : 0,
-          },
-          {
-            headers: { Authorization: token },
-          }
-        );
-
-        toast.success(res.data.msg);
-        setNum(0);
-      }
-    } catch (err) {
-      toast.error(err.response.data.msg);
+  const Roles = ({ role }) => {
+    if (role === 1) {
+      return <span>Super Admin</span>;
     }
+    if (role === 0) {
+      return <span>User</span>;
+    }
+    if (role === 2) {
+      return <span>Admin</span>;
+    }
+    if (role === 3) {
+      return <span>Moderator</span>;
+    }
+    if (role === 4) {
+      return <span>Manager</span>;
+    }
+  };
+
+  const updateRole = () => {
+    setLoading(true);
+    auth
+      .patch(
+        `/user/update-user-role/${id}`,
+        { role: value },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((res) => {
+        toast.success(res.data.msg);
+        setLoading(false);
+      })
+      .catch((e) => {
+        toast.error(e.response.data.msg);
+        setLoading(false);
+      });
   };
 
   return (
@@ -62,50 +66,64 @@ const EditComp = () => {
       <Container>
         <SignUpDiv>
           <Heading>Update User</Heading>
-         
-            <div>
-              <Input
-                label="Name"
-                type="name"
-                defaultValue={editUser.name}
-                name="name"
-                disabled="true"
-              />
-            </div>
-            <div>
-              <Input
-                label="Email"
-                type="email"
-                name="email"
-                disabled="true"
-                defaultValue={editUser.email}
-              />
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="isAdmin"
-                checked={checkAdmin}
-                onChange={handleCheck}
-              />
-              <label htmlFor="isAdmin">isAdmin</label>
-            </div>
 
-            <div>
-              <Button
-                onClick={handleUpdate}
-                name={
-                  loading ? (
-                    <>
-                      <CircularProgress sx={{ color: "white" }} />
-                    </>
-                  ) : (
-                    "Update"
-                  )
-                }
-                type="submit"
-              />
-            </div>
+          <div>
+            <Input
+              label="Name"
+              type="name"
+              defaultValue={state.name}
+              name="name"
+              disabled="true"
+            />
+          </div>
+          <div>
+            <Input
+              label="Email"
+              type="email"
+              name="email"
+              disabled="true"
+              defaultValue={state.email}
+            />
+          </div>
+          <SelectDiv>
+            <InputLabel
+              className="label"
+              id="demo-simple-select-standard-label"
+            >
+              New Role
+            </InputLabel>
+            <Select
+              className="select_field"
+              labelId="demo-simple-select-standard-label"
+              id="demo-simple-select-standard"
+              size="small"
+              onChange={(e) => handleChange(e)}
+            >
+              {roles.map((val, index) => {
+                return (
+                  <MenuItem key={index} value={val.role}>
+                    <Roles role={val.role} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </SelectDiv>
+
+          <div>
+            <Button
+              onClick={updateRole}
+              name={
+                loading ? (
+                  <>
+                    <CircularProgress sx={{ color: "white" }} />
+                  </>
+                ) : (
+                  "Update"
+                )
+              }
+              type="submit"
+            />
+          </div>
 
           <LinksDiv>
             <Link to="/profile" className="links">
@@ -151,6 +169,19 @@ const LinksDiv = styled.div`
   .links {
     display: block;
     color: blueviolet;
+  }
+`;
+
+const SelectDiv = styled.div`
+  .select_field {
+    width: 90%;
+  }
+  .label {
+    text-align: left;
+    margin-left: 5%;
+    font-weight: bold;
+    color: black;
+    font-size: 14px;
   }
 `;
 

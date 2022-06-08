@@ -15,7 +15,6 @@ import { Avatar } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { dispatchGetUser, fetchUser } from "../../Redux/Actions/AuthActions";
 
-
 const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
@@ -58,7 +57,7 @@ function ResponsiveDrawer(props) {
 
         {token ? (
           <>
-          <ListItem onClick={handleDrawerToggle}>
+            <ListItem onClick={handleDrawerToggle}>
               <SideList>
                 <Link to="/admin" className="link">
                   Admin Page
@@ -170,6 +169,11 @@ function ResponsiveDrawer(props) {
                       </Link>
                     </li>
                     <li>
+                      <Link to="/create-role" className="link">
+                        Create Role
+                      </Link>
+                    </li>
+                    <li>
                       <Link to="/profile" className="link">
                         Profile
                       </Link>
@@ -180,6 +184,7 @@ function ResponsiveDrawer(props) {
                         onClick={() => {
                           dispatch({ type: "REMOVE_TOKEN" });
                           localStorage.clear();
+                         
                         }}
                       >
                         Logout

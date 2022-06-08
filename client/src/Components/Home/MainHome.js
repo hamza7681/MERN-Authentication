@@ -3,12 +3,14 @@ import styled from "styled-components";
 import useAdmin from "../../CustomHooks/useAdmin";
 
 const MainHome = () => {
-  const isAdmin = useAdmin();
+  const { isSuperAdmin, isAdmin } = useAdmin();
+
   return (
     <>
       <Container>
-        <UserAdmin>User & Admin</UserAdmin>
-        {isAdmin ? <Admin>Admin</Admin> : ""}
+        <UserAdmin>User</UserAdmin>
+        {isSuperAdmin ? <Admin>Admin</Admin> : ""}
+        {isSuperAdmin || isAdmin ? <Moderator>Moderator</Moderator> : ""}
       </Container>
     </>
   );
@@ -22,15 +24,23 @@ const Container = styled.div`
 `;
 
 const UserAdmin = styled.div`
-  width: 50%;
+width: 33%;
   height: 400px;
   color: green;
 `;
 
 const Admin = styled.div`
-  width: 50%;
   height: 400px;
   color: red;
+width: 33%;
+
+`;
+
+const Moderator = styled.div`
+  height: 400px;
+  color: brown;
+width: 34%;
+
 `;
 
 export default MainHome;

@@ -1,4 +1,5 @@
 const User = require("../models/userSchema");
+const Role = require("../models/roleSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sgEmail = require("@sendgrid/mail");
@@ -44,7 +45,7 @@ const userCtrl = {
 
       const message = {
         to: newUser.email,
-        from: "hamza2016ag7681@gmail.com",
+        from: "hamzambf@gmail.com",
         subject: "Email verification",
         html: `
         <h3>Activate your email by clicking on following link</h3>
@@ -66,6 +67,7 @@ const userCtrl = {
       const user = jwt.verify(activation_token, ACTIVATION_TOKEN_SECRET);
       const { name, email, password } = user;
       const check = await User.findOne({ email });
+      const role = await Role.findOne({ role: 0 });
       if (check) {
         return res.status(400).json({ msg: "Email already exist" });
       }
@@ -73,8 +75,11 @@ const userCtrl = {
         name,
         email,
         password,
+        role: role.role,
       });
+
       await newUser.save();
+
       res.json({ msg: "Account has been activated" });
     } catch (e) {
       return res.status(500).json({ msg: e.message });
@@ -122,7 +127,7 @@ const userCtrl = {
       sgEmail.setApiKey(SENGRID_API);
       const message = {
         to: email,
-        from: "hamza2016ag7681@gmail.com",
+        from: "hamzambf@gmail.com",
         subject: "Email verification",
         html: `
         <h3>Reset your password by clicking on following link</h3>
@@ -159,6 +164,7 @@ const userCtrl = {
   getUsersAllInfo: async (req, res) => {
     try {
       const users = await User.find().select("-password");
+
       res.json(users);
     } catch (e) {
       return res.status(500).json({ msg: e.message });
@@ -181,15 +187,50 @@ const userCtrl = {
       return res.status(500).json({ msg: e.message });
     }
   },
-  updateUserRole: async (req, res) => {
+  createRole: async (req, res) => {
     try {
       const { role } = req.body;
-      await User.findOneAndUpdate({ _id: req.params.id }, { role });
-      res.json({ msg: "Profile updated successfully" });
+
+      const checkRole = await Role.findOne({ role });
+      if (checkRole) {
+        return res.status(400).json({ msg: "Role already exist!" });
+      }
+      const newRole = new Role({
+        role: role,
+      });
+      newRole.save();
+      res.json({ msg: "Role has been created successfully" });
     } catch (e) {
       return res.status(500).json({ msg: e.message });
     }
   },
+  getAllRoles: async (req, res) => {
+    try {
+      const roles = await Role.find();
+      res.json(roles);
+    } catch (e) {
+      return res.status(500).json({ msg: e.message });
+    }
+  },
+  deleteRole: async (req, res) => {
+    try {
+      await Role.findByIdAndDelete({ _id: req.params.id });
+      res.json({ msg: "Role has been deleted Successfully" });
+    } catch (e) {
+      return res.status(500).json({ msg: e.message });
+    }
+  },
+  updateUserRole: async (req, res) => {
+    try {
+      const { role } = req.body;
+
+      await User.findOneAndUpdate({ _id: req.params.id }, { role: role });
+      res.json({ msg: "User role update successfully" });
+    } catch (e) {
+      return res.status(500).json({ msg: e.message });
+    }
+  },
+
   deleteUser: async (req, res) => {
     try {
       await User.findByIdAndDelete({ _id: req.params.id });
