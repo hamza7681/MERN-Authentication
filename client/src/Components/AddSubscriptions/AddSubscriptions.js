@@ -1,45 +1,34 @@
 import { CircularProgress, MenuItem, Select } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import auth from "../../axios/axiosInstance";
 import Button from "../../Reuseables/Button";
+import Table from "./SubscriptionTable/index";
+import Input from "../../Reuseables/Input";
+import auth from "../../axios/axiosInstance";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import Table from "./RoleTable/index";
-import {
-  fetchAllRoles,
-  dispatchAllRoles,
-} from "../../Redux/Actions/RoleActions";
+import { useSelector } from "react-redux";
 
-const RoleComp = () => {
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
+const AddSubscriptionsComp = () => {
   const { token } = useSelector((state) => state.TokenReducer);
-  const { isSuperAdmin } = useSelector((state) => state.AuthReducer);
+  const [loading, setLoading] = useState(false);
+  const [price, setPrice] = useState();
+  const [desc, setDesc] = useState();
+  const [users, setUsers] = useState();
+  const handleChangeInput = (e) => {
+    setPrice(e.target.value);
+  };
   const [value, setValue] = useState();
   const handleChange = (e) => {
     let value = e.target.value;
     setValue(value);
   };
 
-  useEffect(() => {
-    if (isSuperAdmin) {
-      const getAllRoles = async () => {
-        return await fetchAllRoles(token).then((res) => {
-          dispatch(dispatchAllRoles(res));
-        });
-      };
-      getAllRoles();
-    }
-  }, [token, isSuperAdmin, dispatch]);
-
-  const updateRole = () => {
+  const Add = () => {
     setLoading(true);
     auth
       .post(
-        "/user/create-role",
-        { role: value },
+        "/subscription/add-subscription",
+        { title: value, price: price, description: desc, users: users },
         {
           headers: {
             Authorization: token,
@@ -55,11 +44,12 @@ const RoleComp = () => {
         setLoading(false);
       });
   };
+
   return (
     <>
       <Container>
         <Left>
-          <Heading>Create Role</Heading>
+          <Heading>Create Subscription</Heading>
 
           <SelectDiv>
             <Select
@@ -69,16 +59,40 @@ const RoleComp = () => {
               size="small"
               onChange={(e) => handleChange(e)}
             >
-              <MenuItem value={2}>Admin</MenuItem>
-              <MenuItem value={3}>Moderator</MenuItem>
-              <MenuItem value={4}>Manager</MenuItem>
-              <MenuItem value={0}>User</MenuItem>
+              <MenuItem value="Basic">Basic</MenuItem>
+              <MenuItem value="Gold">Gold</MenuItem>
+              <MenuItem value="Platinum">Platinum</MenuItem>
+              <MenuItem value="Premium">Premium</MenuItem>
             </Select>
           </SelectDiv>
+          <Field>
+            <Input
+              label="Price"
+              type="number"
+              value={price}
+              handleChangeInput={(e) => setPrice(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <Input
+              label="Description"
+              type="text"
+              value={desc}
+              handleChangeInput={(e) => setDesc(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <Input
+              label="Users"
+              type="number"
+              value={users}
+              handleChangeInput={(e) => setUsers(e.target.value)}
+            />
+          </Field>
 
           <div>
             <Button
-              onClick={updateRole}
+              onClick={Add}
               name={
                 loading ? (
                   <>
@@ -91,12 +105,6 @@ const RoleComp = () => {
               type="submit"
             />
           </div>
-
-          <LinksDiv>
-            <Link to="/profile" className="links">
-              Back to Profile
-            </Link>
-          </LinksDiv>
         </Left>
         <Right>
           <Table />
@@ -134,15 +142,8 @@ const Left = styled.div`
 const Right = styled.div`
   width: 70%;
   @media screen and (max-width: 768px) {
-    
+   
     width: 100%;
-  }
-`;
-
-const LinksDiv = styled.div`
-  .links {
-    display: block;
-    color: blueviolet;
   }
 `;
 
@@ -152,4 +153,8 @@ const SelectDiv = styled.div`
   }
 `;
 
-export default RoleComp;
+const Field = styled.div`
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+export default AddSubscriptionsComp;

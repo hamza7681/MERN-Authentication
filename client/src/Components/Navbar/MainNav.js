@@ -164,8 +164,8 @@ function ResponsiveDrawer(props) {
                       </AvatarDiv>
                     </li>
                     <li>
-                      <Link to="/admin" className="link">
-                        Admin Page
+                      <Link to="/subscriptions" className="link">
+                        Subscriptions
                       </Link>
                     </li>
                     <li>

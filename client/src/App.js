@@ -13,10 +13,11 @@ import ProtectedRoutes from "./Routes/ProtectedRoutes";
 import PrivateRoutes from "./Routes/PrivateRoutes";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import EditUserPage from "./Pages/EditUserPage";
-import AdminRoutePage from "./Pages/AdminRoutePage";
 import UnAuthorizedPage from "./Pages/UnAuthorizedPage";
 import useAdmin from "./CustomHooks/useAdmin";
 import CreateRolePage from "./Pages/CreateRolePage";
+import SubscriptionPage from "./Pages/SubscriptionPage";
+import EditSubscriptionPage from "./Pages/EditSubscriptionPage";
 
 function App() {
   const { isSuperAdmin, isAdmin } = useAdmin();
@@ -27,8 +28,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route
-          path="/admin"
-          element={isSuperAdmin ? <AdminRoutePage /> : <UnAuthorizedPage />}
+          path="/subscriptions"
+          element={isSuperAdmin ? <SubscriptionPage /> : <UnAuthorizedPage />}
         />
         <Route
           path="/create-role"
@@ -39,6 +40,12 @@ function App() {
           <Route
             path="/edit-user/:id"
             element={isSuperAdmin ? <EditUserPage /> : <UnAuthorizedPage />}
+          />
+          <Route
+            path="/edit-subscription/:id"
+            element={
+              isSuperAdmin ? <EditSubscriptionPage /> : <UnAuthorizedPage />
+            }
           />
         </Route>
         <Route element={<PrivateRoutes />}>

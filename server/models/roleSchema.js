@@ -4,7 +4,7 @@ const roleSchema = new mongoose.Schema(
   {
     role: {
       type: Number,
-      required: true, // 0 = user, 1 = admin, 2 = moderator, 3 = manager
+      required: true, // 0 = user, 1 = SuperAdmin, 2 = Admin, 3 = Moderator, 4 = Manager
     },
   },
   {

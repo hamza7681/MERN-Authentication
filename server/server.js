@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoutes");
-const uploadAvatar = require("./routes/upload");
 
 const app = express();
 app.use(express.json());
@@ -32,7 +31,8 @@ mongoose
   });
 
 app.use("/user", userRouter);
-app.use("/api", require('./routes/upload'));
+app.use("/api", require("./routes/upload"));
+app.use("/subscription", require("./routes/subscriptionRoutes"));
 
 // Server listener
 app.listen(PORT, () => {
