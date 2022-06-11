@@ -16,11 +16,11 @@ function Row(props) {
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell component="th" scope="row">
-          {row.name}
+          {row.user.name}
         </TableCell>
-        <TableCell align="left">{row.email}</TableCell>
-        <TableCell align="left">{row.subTitle}</TableCell>
-        <TableCell align="left">{row.subPrice}</TableCell>
+        <TableCell align="left">{row.user.email}</TableCell>
+        <TableCell align="left">{row.subscription.title}</TableCell>
+        <TableCell align="left">{row.subscription.price}</TableCell>
         <TableCell align="left">
           
 

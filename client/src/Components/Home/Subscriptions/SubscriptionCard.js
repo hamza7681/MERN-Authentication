@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import auth from "../../../axios/axiosInstance";
 
-const SubscriptionCard = ({ title, price, description, users }) => {
+const SubscriptionCard = ({ title, price, description, users, id }) => {
   const { user } = useSelector((state) => state.AuthReducer);
   const { token } = useSelector((state) => state.TokenReducer);
   const navigate = useNavigate();
@@ -18,10 +18,8 @@ const SubscriptionCard = ({ title, price, description, users }) => {
       .post(
         "subscription/add-user",
         {
-          name: user.name,
           email: user.email,
-          subPrice: price,
-          subTitle: title,
+          id: id,
         },
         { headers: { Authorization: token } }
       )

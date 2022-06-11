@@ -8,7 +8,8 @@ const subscribeUserSchema = new mongoose.Schema(
       required:true
     },
     subscription: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
       required:true
     },
   },

@@ -62,8 +62,8 @@ const subscribeCtrl = {
   },
   addUser: async (req, res) => {
     try {
-      const { email,id } = req.body;
-      if (!email||!id) {
+      const { email, id } = req.body;
+      if (!email || !id) {
         return res.status(400).json({ msg: "Missing Fields" });
       }
       const user = await User.findOne({ email: email });
@@ -76,29 +76,32 @@ const subscribeCtrl = {
       newSubscription.save();
       res.json({ msg: "Subscription added successfully" });
     } catch (e) {
-      return res.status(500).json({ msg: e.message }) 
+      return res.status(500).json({ msg: e.message });
     }
   },
-  // getUserSubscriptions: async (req, res) => {
-  //   try {
-  //     const result = await AddUserSubscription.find();
-  //     res.json(result);
-  //   } catch (e) {
-  //     return res.status(500).json({ msg: e.message });
-  //   }
-  // },
+  getUserSubscriptions: async (req, res) => {
+    try {
+      const result = await AddUserSubscription.find().populate(
+        "user subscription"
+      );
+      res.json(result);
+    } catch (e) {
+      return res.status(500).json({ msg: e.message });
+    }
+  },
 
-  // deleteUserSubscription: async (req, res) => {
-  //   try {
-  //     console.log(req.params.id);
-  //     const result = await AddUserSubscription.findOne({ _id: req.params.id });
-  //     await User.findOneAndUpdate({ email: result.email }, { role: 0 });
-  //     await AddUserSubscription.findByIdAndDelete({ _id: req.params.id });
-  //     res.json({ msg: "Subscription deleted successfully" });
-  //   } catch (e) {
-  //     return res.status(500).json({ msg: e.message });
-  //   }
-  // },
+  deleteUserSubscription: async (req, res) => {
+    try {
+      const result = await AddUserSubscription.findOne({
+        _id: req.params.id,
+      }).populate("user");
+      await User.findOneAndUpdate({ email: result.user.email }, { role: 0 });
+      await AddUserSubscription.findByIdAndDelete({ _id: req.params.id });
+      res.json({ msg: "Subscription deleted successfully" });
+    } catch (e) {
+      return res.status(500).json({ msg: e.message });
+    }
+  },
 };
 
 module.exports = subscribeCtrl;

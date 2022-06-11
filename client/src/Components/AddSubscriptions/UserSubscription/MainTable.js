@@ -43,7 +43,7 @@ export default function CollapsibleTable() {
     if (valid) {
       if (e.key == "Enter") {
         const filterRows = users.filter((row) => {
-          return row.title.toLowerCase().includes(search.toLowerCase());
+          return row.user.email.toLowerCase().includes(search.toLowerCase());
         });
         setRows(filterRows);
       }

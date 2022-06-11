@@ -35,6 +35,7 @@ const Subscription = () => {
                   price={val.price}
                   description={val.description}
                   users={val.users}
+                  id={val._id}
                 />
               </Grid>
             </>
